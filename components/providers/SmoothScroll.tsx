@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
-import Lenis from "lenis";
+import type Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -16,24 +16,12 @@ export const useGoTo = () => useContext(GoToCtx);
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
   const [lenis, setLenis] = useState<Lenis | null>(null);
-  const raf = useRef<(t: number) => void>();
   const wipe = useRef<HTMLDivElement>(null);
   const busy = useRef(false);
 
-  useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const l = new Lenis({ lerp: reduce ? 1 : 0.085, smoothWheel: !reduce, wheelMultiplier: 1, touchMultiplier: 1.4 });
-    ScrollTrigger.config({ ignoreMobileResize: true });
-    l.on("scroll", ScrollTrigger.update);
-    raf.current = (time: number) => l.raf(time * 1000);
-    gsap.ticker.add(raf.current);
-    gsap.ticker.lagSmoothing(0);
-    setLenis(l);
-    return () => {
-      if (raf.current) gsap.ticker.remove(raf.current);
-      l.destroy();
-    };
-  }, []);
+  // Native browser scrolling (no smooth-scroll hijacking). `lenis` stays null, so every
+  // caller falls back to the browser's own scrollTo / scrollIntoView.
+  useEffect(() => { setLenis(null); }, []);
 
   const goTo = useCallback<GoTo>((target, opts) => {
     const el = document.querySelector<HTMLElement>(target);

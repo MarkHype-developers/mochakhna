@@ -12,6 +12,7 @@
     "@fontsource-variable/bricolage-grotesque": "^5.3.0",
     "@fontsource/caveat": "^5.3.0",
     "@fontsource/noto-sans-oriya": "^5.3.0",
+    "@fontsource/oswald": "^5.3.0",
     "@gsap/react": "^2.1.2",
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.17.10",

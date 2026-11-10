@@ -1,7 +1,7 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
-import { ALL_ITEMS, COMBOS } from "@/lib/menu";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { ALL_ITEMS, DEALS } from "@/lib/menu";
 
 type Line = { id: string; name: string; price: number | null; qty: number };
 type CartCtx = {
@@ -19,16 +19,29 @@ type CartCtx = {
 };
 
 const Ctx = createContext<CartCtx | null>(null);
+const KEY = "ac-cart-v1";
 
 const catalogue = new Map<string, { name: string; price: number | null }>([
-  ...ALL_ITEMS.map((i) => [i.id, { name: i.name, price: i.price }] as const),
-  ...COMBOS.map((c) => [c.id, { name: `${c.name} — ${c.mood}`, price: c.price }] as const),
+  ...ALL_ITEMS.map((i) => [i.id, { name: i.qty ? `${i.name} (${i.qty})` : i.name, price: i.price }] as const),
+  ...DEALS.map((d) => [d.id, { name: `${d.name} — ${d.title}`, price: d.price }] as const),
 ]);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [map, setMap] = useState<Record<string, number>>({});
   const [open, setOpen] = useState(false);
   const [lastAdded, setLast] = useState<CartCtx["lastAdded"]>(null);
+
+  // keep the plate across pages / reloads (per browser)
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(KEY) || "{}");
+      const clean = Object.fromEntries(Object.entries(saved).filter(([id, n]) => catalogue.has(id) && typeof n === "number" && n > 0));
+      setMap(clean as Record<string, number>);
+    } catch {}
+  }, []);
+  useEffect(() => {
+    try { localStorage.setItem(KEY, JSON.stringify(map)); } catch {}
+  }, [map]);
 
   const add = useCallback((id: string) => {
     setMap((m) => ({ ...m, [id]: (m[id] ?? 0) + 1 }));
@@ -44,7 +57,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const value = useMemo<CartCtx>(() => {
-    const lines = Object.entries(map).map(([id, qty]) => {
+    const lines = Object.entries(map).filter(([id]) => catalogue.has(id)).map(([id, qty]) => {
       const c = catalogue.get(id)!;
       return { id, qty, name: c.name, price: c.price };
     });

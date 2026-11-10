@@ -1,81 +1,68 @@
 "use client";
 
 import Image from "next/image";
-import { useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useCart } from "./providers/Cart";
-import { useGoTo } from "./providers/SmoothScroll";
-import { SITE, waLink } from "@/lib/site";
-import { onLoaded } from "@/lib/loaded";
+import { SITE, tel } from "@/lib/site";
 
 const links = [
-  { href: "#story", label: "Story" },
-  { href: "#menu", label: "Menu" },
-  { href: "#combos", label: "Combos" },
-  { href: "#ayunraz", label: "Ayunraz" },
+  { href: "/menu", label: "Menu" },
+  { href: "/deals", label: "Deals" },
 ];
 
+/** KFC-style header: white bar (logo · Menu · Deals … call · cart) + dark "start order" strip. */
 export default function Nav() {
-  const ref = useRef<HTMLElement>(null);
-  const bar = useRef<HTMLDivElement>(null);
   const cart = useCart();
-  const goTo = useGoTo();
+  const path = usePathname();
+  const [scrolled, setScrolled] = useState(false);
 
-  useGSAP((_, contextSafe) => {
-    const el = ref.current!;
-    const items = el.querySelectorAll(".nav-logo, .nav-links a, .nav-cta > *");
-    gsap.set(items, { y: -30, autoAlpha: 0 });
-    const off = onLoaded(contextSafe!(() => {
-      gsap.to(items, { y: 0, autoAlpha: 1, stagger: 0.06, duration: 0.8, ease: "power3.out", delay: 0.2 });
-    }));
-
-    // hide on scroll down, show on scroll up
-    const hide = gsap.fromTo(el, { yPercent: 0 }, { yPercent: -140, paused: true, duration: 0.45, ease: "power3.inOut" });
-    ScrollTrigger.create({
-      start: 0, end: "max",
-      onUpdate: (s) => {
-        el.classList.toggle("is-scrolled", s.scroll() > 60);
-        if (s.direction === 1 && s.scroll() > 500) { hide.play(); document.documentElement.classList.add("nav-hidden"); }
-        else if (s.direction === -1) { hide.reverse(); document.documentElement.classList.remove("nav-hidden"); }
-      },
-    });
-
-    // brand-coloured reading progress line
-    gsap.fromTo(bar.current, { scaleX: 0 }, { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.3 } });
-    return off;
-  }, { scope: ref });
-
-  const go = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    goTo(href, { offset: href === "#menu" ? 0 : -20 });
-  };
+  useEffect(() => {
+    const on = () => setScrolled(window.scrollY > 8);
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
+  }, []);
 
   return (
-    <>
-      <div ref={bar} className="scroll-progress" aria-hidden />
-      <header ref={ref} className="nav">
-        <a href="#top" className="nav-logo" onClick={(e) => go(e, "#top")} aria-label={SITE.name}>
-          <Image src="/img/mochakhna-logo.png" alt="Mo Chakhna" width={1043} height={581} priority />
-        </a>
-        <nav className="nav-links">
-          {links.map((l) => (
-            <a key={l.href} href={l.href} onClick={(e) => go(e, l.href)}>
-              <span className="roll"><span data-text={l.label}>{l.label}</span></span>
+    <header className={`kn${scrolled ? " is-scrolled" : ""}`}>
+      <div className="kn-bar">
+        <div className="kn-in">
+          <Link href="/" className="kn-logo" aria-label={`${SITE.name} home`}>
+            <Image src="/img/ayunraz-chakhna-logo.jpg" alt={SITE.name} width={1129} height={665} priority />
+          </Link>
+          <nav className="kn-links" aria-label="Main">
+            {links.map((l) => (
+              <Link key={l.href} href={l.href} className={path?.startsWith(l.href) ? "on" : ""}>{l.label}</Link>
+            ))}
+          </nav>
+          <div className="kn-right">
+            <a className="kn-call" href={tel(SITE.phones[0])}>
+              <span className="kn-call-ic" aria-hidden>
+                <svg viewBox="0 0 24 24" width="16" height="16"><path d="M6.6 10.8a15.5 15.5 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.6a1 1 0 0 1-.25 1z" fill="currentColor" /></svg>
+              </span>
+              <span className="kn-call-t">Call to order</span>
             </a>
-          ))}
-        </nav>
-        <div className="nav-cta">
-          <a className="btn btn--ghost btn--sm hide-sm" href={waLink("Hi Mo Chakhna! I'd like to place an order.")} target="_blank" rel="noreferrer">
-            Order on WhatsApp
-          </a>
-          <button className="nav-cart" onClick={() => cart.setOpen(true)} aria-label="Open cart">
-            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden><path d="M4 9h16l-1.5 10.5a2 2 0 0 1-2 1.5H7.5a2 2 0 0 1-2-1.5zM8 9V7a4 4 0 0 1 8 0v2" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
-            <b key={cart.count} className={cart.count ? "pop" : ""}>{cart.count}</b>
-          </button>
+            <span className="kn-div" aria-hidden />
+            <button className="kn-bucket" onClick={() => cart.setOpen(true)} aria-label={`Cart, ${cart.count} items`}>
+              <svg viewBox="0 0 40 44" width="34" height="38" aria-hidden>
+                <path d="M5 11h30l-3.2 28.5a3 3 0 0 1-3 2.5H11.2a3 3 0 0 1-3-2.5z" fill="#fff" stroke="#202124" strokeWidth="2.2" strokeLinejoin="round" />
+                <path d="M9 11 11.5 41M31 11 28.5 41" stroke="#e4002b" strokeWidth="5" />
+                <path d="M20 11v31" stroke="#e4002b" strokeWidth="5" />
+                <rect x="3" y="7" width="34" height="6" rx="2" fill="#e4002b" />
+                <circle cx="20" cy="27" r="8.5" fill="#fff" stroke="#202124" strokeWidth="1.6" />
+              </svg>
+              <b key={cart.count} className={cart.count ? "pop" : ""}>{cart.count}</b>
+            </button>
+          </div>
         </div>
-      </header>
-    </>
+      </div>
+      <div className="kn-strip">
+        <span className="kn-strip-l">Let&apos;s order for delivery, pick up, or dine-in</span>
+        <span className="kn-strip-s">Delivery · Pick up · Dine-in</span>
+        <Link href="/menu" className="kn-start">Start Order</Link>
+      </div>
+    </header>
   );
 }

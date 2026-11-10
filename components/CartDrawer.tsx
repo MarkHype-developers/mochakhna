@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { gsap } from "gsap";
 import { useCart } from "./providers/Cart";
 import { useLenis } from "./providers/SmoothScroll";
@@ -29,12 +30,13 @@ export default function CartDrawer() {
 
   // Zomato-style sticky "view cart" bar — hidden while the hero is on screen
   const [pastHero, setPastHero] = useState(false);
+  const path = usePathname();
   useEffect(() => {
-    const on = () => setPastHero(window.scrollY > window.innerHeight * 0.75);
+    const on = () => setPastHero(path !== "/" || window.scrollY > window.innerHeight * 0.75);
     on();
     window.addEventListener("scroll", on, { passive: true });
     return () => window.removeEventListener("scroll", on);
-  }, []);
+  }, [path]);
   const showBar = cart.count > 0 && pastHero && !cart.open;
   useEffect(() => {
     gsap.to(bar.current, { y: 0, yPercent: showBar ? 0 : 160, duration: 0.6, ease: showBar ? "back.out(1.6)" : "power3.in", overwrite: "auto" });

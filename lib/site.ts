@@ -1,28 +1,27 @@
 // ─────────────────────────────────────────────────────────────
-//  Mo Chakhna — site-wide config. Edit these before going live.
+//  Ayunraz Chakhna — site-wide config (from the printed menu card)
 // ─────────────────────────────────────────────────────────────
 export const SITE = {
-  name: "Mo Chakhna",
+  name: "Ayunraz Chakhna",
+  short: "Chakhna",
   odia: "ମୋ ଚଖଣା",
-  tagline: "Daru Ka Dost",
-  promise: "We Never Sell Alcohol",
-  domain: "mochakhna.com",
-  url: "https://mochakhna.com",
-  parent: {
-    name: "Ayunraz",
-    tagline: "Authentic Food Of New India",
-  },
-  // TODO: replace with the real WhatsApp number (country code, no +, no spaces)
-  whatsapp: "919999999999",
-  // TODO: replace with real contact details
-  phone: "+91 99999 99999",
-  email: "hello@mochakhna.com",
-  address: "Bhubaneswar, Odisha",
-  instagram: "https://instagram.com/mochakhna",
+  tagline: "Big Flavours. Good Company.",
+  promise: "We never sell alcohol.",
+  domain: "ayunrazchakhna.com",
+  url: "https://www.ayunrazchakhna.com",
+  parent: { name: "Ayunraz", tagline: "Authentic Food Of New India" },
+  phones: ["+91 97776 89321", "+91 76060 02139"],
+  whatsapp: "919777689321", // orders go to the first number
+  hours: "Every day · 9 AM – 11 PM",
+  address: ["Ayunraz Residence, InfoValley II, Durgapur", "Near DN Fairytale, Bhubaneswar, Odisha"],
+  maps: "https://www.google.com/maps/search/?api=1&query=Ayunraz+Residence+InfoValley+II+Durgapur+Bhubaneswar",
+  email: "hello@ayunrazchakhna.com",
+  instagram: "https://instagram.com/ayunrazchakhna",
 };
 
-// Odia must be split by grapheme cluster, never by code point (vowel signs would detach)
 export const ODIA_CLUSTERS = ["ମୋ", " ", "ଚ", "ଖ", "ଣା"];
 
 export const waLink = (text: string) =>
   `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(text)}`;
+
+export const tel = (p: string) => `tel:${p.replace(/\s/g, "")}`;

@@ -6,7 +6,8 @@ import { useRef, useState } from "react";
 import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { useGSAP } from "@gsap/react";
-import { useGoTo } from "./providers/SmoothScroll";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { onLoaded } from "@/lib/loaded";
 import Photo from "./Photo";
 
@@ -14,12 +15,12 @@ gsap.registerPlugin(SplitText);
 
 const Steam = dynamic(() => import("./hero/Steam"), { ssr: false });
 
-const cravings = ["chicken kasha", "masala peanuts", "koni fish fry", "chilli chicken", "steamed chana", "combo 3"];
+const cravings = ["chicken kasha", "chicken tikka", "french fries", "masala fish fry", "chilli paneer", "lollipops"];
 
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
   const [q, setQ] = useState("");
-  const goTo = useGoTo();
+  const router = useRouter();
 
   useGSAP((_, contextSafe) => {
     const qs = gsap.utils.selector(root);
@@ -51,21 +52,12 @@ export default function Hero() {
     }
 
     gsap.fromTo(qs(".hero-fish"), { scale: 1.12 }, { scale: 1, duration: 8, ease: "power1.out" });
-    gsap.to(qs(".hero-fish"), {
-      yPercent: 15, ease: "none",
-      scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
-    });
-    gsap.to(qs(".hero-content"), {
-      yPercent: -35, autoAlpha: 0, ease: "none",
-      scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
-    });
     return () => { off(); split.revert(); };
   }, { scope: root });
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    window.dispatchEvent(new CustomEvent("mc:search", { detail: q }));
-    goTo("#menu-results", { offset: -200 });
+    router.push(q.trim() ? `/menu?q=${encodeURIComponent(q.trim())}` : "/menu");
   };
 
   return (
@@ -92,9 +84,10 @@ export default function Hero() {
           <button type="submit" className="btn btn--red">Find it</button>
         </form>
 
-        <p className="hero-reveal hero-hint">
-          <span className="hand">scroll down for the menu ↓</span>
-        </p>
+        <div className="hero-reveal hero-ctas">
+          <Link href="/menu" className="btn btn--yellow btn--lg">View Menu</Link>
+          <Link href="/deals" className="btn btn--ghost btn--lg">Today&apos;s Deals</Link>
+        </div>
       </div>
 
       <svg className="hero-edge" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden>

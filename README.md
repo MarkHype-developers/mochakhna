@@ -1,45 +1,29 @@
-# Mo Chakhna — mochakhna.com
+# Ayunraz Chakhna — website
 
-Brand site for **Mo Chakhna (ମୋ ଚଖଣା) — Daru Ka Dost**, a brand of **Ayunraz — Authentic Food Of New India**.
+KFC-style ordering site for **Ayunraz Chakhna** (Mo Chakhna · ମୋ ଚଖଣା), a brand of Ayunraz.
 
 ## Run
 
 ```bash
-npm install
-npm run dev        # http://localhost:3000
-npm run build && npm start
+npm install          # also installs the Oswald heading font
+npm run dev          # http://localhost:3000  (dev mode is slower than the real site)
+npm run build && npm start   # real speed
 ```
 
-Node 18.18+ required. Deploy on Vercel as-is (zero config), then point `mochakhna.com` at it.
+## Pages
 
-## Before going live — edit `lib/site.ts`
-
-| Field | What to put |
+| URL | What |
 |---|---|
-| `whatsapp` | Real WhatsApp number, e.g. `919876543210` (orders are sent here) |
-| `phone`, `email`, `address`, `instagram` | Real contact details |
+| `/` | Red hero with search → Browse categories → Top deals → Bestsellers → promise strip |
+| `/menu` | Full menu: sticky category sidebar (chips on phones), search, veg-only, product cards |
+| `/deals` | Combo deal cards + add-ons carousel |
 
-Menu items, prices and combos live in `lib/menu.ts`. `price: null` shows "Price on request".
-`SHOW_TOBACCO` is `false` — cigarettes are hidden from the menu and Combo 3 because COTPA 2003 restricts tobacco advertising in India.
+Cart (top right) works on every page and is remembered in the browser. "Send order on WhatsApp" sends the plate to the first phone number.
 
-## What's inside
+## Edit content
 
-| Section | File | Tech |
-|---|---|---|
-| Preloader (counter, peanuts drop, panel wipe) | `components/Preloader.tsx` | GSAP timeline |
-| 3D hero — falling peanuts, chana, kaju, chillies, lemon, onion rings, corn, coriander; click to "toss" | `components/three/*` | three.js + React Three Fiber + drei; procedurally modelled food (noise-displaced geometry, vertex colours, physical materials, canvas textures) |
-| Zomato-style search w/ rotating cravings → filters the menu | `components/Hero.tsx` | GSAP SplitText |
-| Velocity-reactive marquee | `components/Marquee.tsx` | ScrollTrigger velocity + skew |
-| Scroll-lit story text + parallax food | `components/Story.tsx` | SplitText + scrub |
-| Pinned "build a plate" sequence | `components/PlateAssembly.tsx` | Pinned scrubbed timeline |
-| Menu with category chips, veg toggle, search, ADD steppers | `components/MenuSection.tsx` | GSAP Flip layout animation, ScrollTrigger.batch, 3D tilt |
-| Horizontal pinned combos | `components/Combos.tsx` | containerAnimation |
-| Stats + hand-drawn promise circle | `components/Promise.tsx` | counters, stroke draw |
-| Ayunraz parent-brand section | `components/Ayunraz.tsx` | |
-| Cart bar + drawer → WhatsApp order message | `components/CartDrawer.tsx` | |
-| Zomato-style draggable "Tonight's cravings" rail with custom slider | `components/Cravings.tsx` | GSAP Draggable + Inertia |
-| Floating real-photo food decor | `components/FoodDecor.tsx` | scrubbed parallax + idle float |
-| Smooth scroll | `components/providers/SmoothScroll.tsx` | Lenis synced to GSAP ticker |
-
-Fonts are self-hosted via Fontsource (Bricolage Grotesque, Caveat, Noto Sans Oriya) — no Google Fonts request at runtime.
-Food photography is real stock photography from Unsplash (free under the Unsplash License, no attribution needed), served from Unsplash's CDN at exactly the size each screen needs — the ids live in `lib/photos.ts`. When you have your own shoot, put the files in `public/img/` and replace an id with its path, e.g. `kasha: "/img/kasha.jpg"`.
+- `lib/site.ts` — name, phones, WhatsApp number, hours, address, Google Maps link
+- `lib/menu.ts` — every dish (name, qty, description, price, veg/non-veg, photo, tag) and the combo deals.
+  `price: null` shows "Price on call". `SHOW_TOBACCO` hides Cigarettes (COTPA 2003).
+- `lib/photos.ts` — photo for each dish. Values are Unsplash photo ids (free licence) or a local path like `/img/real/kasha-bowl.jpg`.
+  To use your own shoot, drop the file in `public/img/` and replace the id with its path.

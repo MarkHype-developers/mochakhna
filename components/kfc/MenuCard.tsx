@@ -1,6 +1,7 @@
 "use client";
 
 import Photo from "../Photo";
+import { CUTOUTS, cutSrc } from "@/lib/cutouts";
 import { useCart } from "../providers/Cart";
 import type { MenuItem } from "@/lib/menu";
 
@@ -14,8 +15,13 @@ export default function MenuCard({ item, eager = false }: { item: MenuItem; eage
 
   return (
     <article className="mc" id={`dish-${item.id}`}>
-      <div className="mc-img">
-        <Photo photo={item.photo} alt={item.name} fill loading={eager ? "eager" : "lazy"} sizes="(max-width: 700px) 50vw, (max-width: 1200px) 33vw, 320px" />
+      <div className={`mc-img${CUTOUTS.has(item.photo) ? " is-cut" : ""}`}>
+        {CUTOUTS.has(item.photo) ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={cutSrc(item.photo)} alt={item.name} loading={eager ? "eager" : "lazy"} decoding="async" className="mc-cut" />
+        ) : (
+          <Photo photo={item.photo} alt={item.name} fill loading={eager ? "eager" : "lazy"} sizes="(max-width: 700px) 50vw, (max-width: 1200px) 33vw, 320px" />
+        )}
         {item.tag && <span className="mc-tag">{item.tag}</span>}
         {n === 0 ? (
           <button className="mc-plus" onClick={() => cart.add(item.id)} aria-label={`Add ${item.name}`}>

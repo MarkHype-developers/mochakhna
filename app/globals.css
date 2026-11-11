@@ -1274,3 +1274,19 @@ html { scroll-behavior: auto; }
 .kn-drawer-note { margin-top: auto; padding: 20px 22px 26px; font-size: 13px; color: #777; line-height: 1.6; }
 .kn-shade { position: fixed; inset: 0; z-index: 205; background: rgba(0,0,0,.45); opacity: 0; pointer-events: none; transition: opacity 0.3s; }
 .kn-shade.on { opacity: 1; pointer-events: auto; }
+
+/* KFC-style product cut-outs: dish only, on a soft studio backdrop (no photo background) */
+.mc-img.is-cut {
+  background:
+    radial-gradient(42% 40% at 20% 18%, rgba(255, 214, 180, 0.55), transparent 70%),
+    radial-gradient(36% 34% at 82% 12%, rgba(255, 190, 190, 0.4), transparent 70%),
+    radial-gradient(34% 30% at 52% 22%, rgba(255, 255, 255, 0.95), transparent 70%),
+    linear-gradient(180deg, #efe9e2 0%, #f6f2ec 56%, #fdfcfa 56.5%, #f4f0ea 100%);
+}
+.mc-cut { position: absolute; inset: 4% 4% 2%; width: 92%; height: 94%; object-fit: contain; transition: transform 0.6s var(--ease); filter: saturate(1.08); }
+.mc:hover .mc-cut { transform: translateY(-5px) scale(1.04); }
+.mc-img.is-cut img { box-shadow: none; }
+
+/* cut-out cards: plain white behind the dish */
+.mc-img.is-cut { background: #fff !important; }
+.mc-img.is-cut::before { display: none; }

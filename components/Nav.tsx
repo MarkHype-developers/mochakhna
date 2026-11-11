@@ -19,6 +19,12 @@ export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => setMenuOpen(false), [path]);
+  useEffect(() => {
+    document.documentElement.style.overflow = menuOpen ? "hidden" : "";
+    const esc = (e: KeyboardEvent) => e.key === "Escape" && setMenuOpen(false);
+    window.addEventListener("keydown", esc);
+    return () => window.removeEventListener("keydown", esc);
+  }, [menuOpen]);
 
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 8);
@@ -63,12 +69,17 @@ export default function Nav() {
           </div>
         </div>
       </div>
-      {menuOpen && (
-        <nav className="kn-drawer" aria-label="Mobile">
-          {links.map((l) => <Link key={l.href} href={l.href} className={path?.startsWith(l.href) ? "on" : ""}>{l.label}</Link>)}
-          <a href={tel(SITE.phones[0])}>Call to order · {SITE.phones[0]}</a>
-        </nav>
-      )}
+      <div className={`kn-shade${menuOpen ? " on" : ""}`} onClick={() => setMenuOpen(false)} aria-hidden />
+      <nav className={`kn-drawer${menuOpen ? " on" : ""}`} aria-label="Mobile" aria-hidden={!menuOpen}>
+        <div className="kn-drawer-top">
+          <Image src="/img/ayunraz-chakhna-logo.jpg" alt={SITE.name} width={1129} height={665} />
+          <button onClick={() => setMenuOpen(false)} aria-label="Close menu">×</button>
+        </div>
+        <Link href="/" className={path === "/" ? "on" : ""}>Home</Link>
+        {links.map((l) => <Link key={l.href} href={l.href} className={path?.startsWith(l.href) ? "on" : ""}>{l.label}</Link>)}
+        <a href={tel(SITE.phones[0])}>Call to order · {SITE.phones[0]}</a>
+        <p className="kn-drawer-note">{SITE.hours}<br />{SITE.promise}</p>
+      </nav>
       <div className="kn-strip">
         <span className="kn-strip-l">Let&apos;s order for delivery, pick up, or dine-in</span>
         <span className="kn-strip-s">Delivery · Pick up · Dine-in</span>

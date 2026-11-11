@@ -17,6 +17,8 @@ export default function Nav() {
   const cart = useCart();
   const path = usePathname();
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(() => setMenuOpen(false), [path]);
 
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 8);
@@ -29,6 +31,9 @@ export default function Nav() {
     <header className={`kn${scrolled ? " is-scrolled" : ""}`}>
       <div className="kn-bar">
         <div className="kn-in">
+          <button className="kn-burger" onClick={() => setMenuOpen((v) => !v)} aria-label="Open menu" aria-expanded={menuOpen}>
+            <i /><i /><i />
+          </button>
           <Link href="/" className="kn-logo" aria-label={`${SITE.name} home`}>
             <Image src="/img/ayunraz-chakhna-logo.jpg" alt={SITE.name} width={1129} height={665} priority />
           </Link>
@@ -58,6 +63,12 @@ export default function Nav() {
           </div>
         </div>
       </div>
+      {menuOpen && (
+        <nav className="kn-drawer" aria-label="Mobile">
+          {links.map((l) => <Link key={l.href} href={l.href} className={path?.startsWith(l.href) ? "on" : ""}>{l.label}</Link>)}
+          <a href={tel(SITE.phones[0])}>Call to order · {SITE.phones[0]}</a>
+        </nav>
+      )}
       <div className="kn-strip">
         <span className="kn-strip-l">Let&apos;s order for delivery, pick up, or dine-in</span>
         <span className="kn-strip-s">Delivery · Pick up · Dine-in</span>

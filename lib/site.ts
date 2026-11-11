@@ -11,10 +11,11 @@ export const SITE = {
   url: "https://www.ayunrazchakhna.com",
   parent: { name: "Ayunraz", tagline: "Authentic Food Of New India" },
   phones: ["+91 97776 89321", "+91 76060 02139"],
-  whatsapp: "919777689321", // orders go to the first number
+  whatsapp: "919777689321", // WhatsApp orders: +91 97776 89321
   hours: "Every day · 9 AM – 11 PM",
   address: ["Ayunraz Residence, InfoValley II, Durgapur", "Near DN Fairytale, Bhubaneswar, Odisha"],
   maps: "https://www.google.com/maps/search/?api=1&query=Ayunraz+Residence+InfoValley+II+Durgapur+Bhubaneswar",
+  mapEmbed: "https://www.google.com/maps?q=Ayunraz+Residence,+InfoValley+II,+Durgapur,+Bhubaneswar,+Odisha&z=15&output=embed",
   email: "hello@ayunrazchakhna.com",
   instagram: "https://instagram.com/ayunrazchakhna",
 };

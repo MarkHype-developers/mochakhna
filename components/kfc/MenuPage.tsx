@@ -15,6 +15,7 @@ export default function MenuPage() {
   const [vegOnly, setVegOnly] = useState(false);
   const [active, setActive] = useState(MENU[0].id);
   const [showTop, setShowTop] = useState(false);
+  const [mSearch, setMSearch] = useState(false);
   const lenis = useLenis();
   const sideRef = useRef<HTMLDivElement>(null);
 
@@ -74,11 +75,22 @@ export default function MenuPage() {
           <div className="kmn-side-in">
             <span className="stripes" aria-hidden><i /><i /><i /></span>
             <h1 className="kmn-title">{SITE.name}<br />Menu</h1>
+            <div className="kmn-bar">
+            <button className={`kmn-sbtn${mSearch || q ? " on" : ""}`} onClick={() => setMSearch((v) => !v)} aria-label="Search menu">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M3 7h7M3 12h5M3 17h7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><circle cx="16" cy="11" r="4.5" fill="none" stroke="currentColor" strokeWidth="2" /><path d="M19.5 14.5 22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+            </button>
             <div className="kmn-list" ref={sideRef}>
               {groups.map((g) => (
                 <button key={g.id} data-cat={g.id} className={active === g.id ? "on" : ""} onClick={() => jump(g.id)}>{g.title}</button>
               ))}
             </div>
+            </div>
+            {mSearch && (
+              <div className="kmn-msearch">
+                <input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search menu" aria-label="Search menu" />
+                <label className="km-veg"><input type="checkbox" checked={vegOnly} onChange={() => setVegOnly((v) => !v)} /><span className="sw"><i /></span> Veg</label>
+              </div>
+            )}
             <div className="kmn-tools">
               <div className="kmn-search">
                 <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2.2" /><path d="M20 20l-4-4" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" /></svg>

@@ -1191,3 +1191,55 @@ html { scroll-behavior: auto; }
 .cat-tile:hover .cat-img::before { transform: translateX(120%); }
 /* keep the logo stamp, tags and + button above the sweep */
 .mc-tag, .pc-tag, .mc-plus, .mc-step { z-index: 3; }
+
+/* ── footer map + WhatsApp ── */
+.kf-mapbox { position: relative; width: 100%; aspect-ratio: 16 / 10; border-radius: 2px; overflow: hidden; background: #222; margin-top: 6px; }
+.kf-mapbox iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; filter: grayscale(0.15); }
+.kf-wa { color: #4ade80 !important; font-weight: 700; }
+
+/* ── KFC mobile header ── */
+.kn-burger { display: none; width: 40px; height: 40px; flex-direction: column; justify-content: center; gap: 6px; padding: 8px; }
+.kn-burger i { display: block; height: 2.5px; border-radius: 2px; background: var(--k-ink); }
+.kn-drawer { position: absolute; left: 0; right: 0; top: var(--bar-h); z-index: 5; display: grid; background: #fff; box-shadow: 0 12px 24px rgba(0,0,0,.12); border-top: 1px solid #eee; }
+.kn-drawer a { padding: 16px 22px; font-weight: 700; font-size: 16px; border-bottom: 1px solid #f0f0f0; }
+.kn-drawer a.on { color: var(--k-red); }
+.kmn-sbtn, .kmn-msearch { display: none; }
+
+@media (max-width: 760px) {
+  :root { --bar-h: 70px; --strip-h: 118px; }
+  .kn-in { position: relative; justify-content: space-between; gap: 0; }
+  .kn-burger { display: flex; }
+  .kn-logo { position: absolute; left: 50%; transform: translateX(-50%); }
+  .kn-logo img { width: 74px; }
+  .kn-links, .kn-call { display: none; }
+  .kn-strip { flex-direction: column; gap: 12px; padding: 14px 16px; height: var(--strip-h); font-size: 17px; }
+  .kn-strip-l { display: inline !important; white-space: normal; text-align: center; }
+  .kn-strip-s { display: none !important; }
+  .kn-start { height: 50px; padding: 0 70px; font-size: 16px; font-weight: 500; }
+}
+
+/* ── KFC mobile menu: search icon + category bar, horizontal cards ── */
+@media (max-width: 900px) {
+  .kmn-bar { display: flex; align-items: center; gap: 10px; padding-left: 16px; }
+  .kmn-sbtn { display: grid; place-items: center; flex: none; width: 52px; height: 40px; border-radius: 999px; border: 1px solid #ddd; background: #fff; color: var(--k-ink); }
+  .kmn-sbtn.on { border-color: var(--k-red); color: var(--k-red); }
+  .kmn-list { flex: 1; padding-left: 4px; }
+  .kmn-msearch { display: flex; gap: 12px; align-items: center; padding: 10px 16px 12px; border-top: 1px solid #eee; }
+  .kmn-msearch input { flex: 1; height: 40px; border: 1px solid #ddd; border-radius: 6px; padding: 0 12px; font: inherit; font-size: 14px; outline: 0; }
+  .kmn-msearch input:focus { border-color: var(--k-ink); }
+  .kmn-msearch .km-veg { font-size: 14px; }
+
+  .mc-grid { grid-template-columns: 1fr; gap: 26px; }
+  .mc { display: grid; grid-template-columns: 1fr 44%; grid-template-areas: "head img" "body body"; border-radius: 4px; }
+  .mc-img { grid-area: img; margin: 14px 14px 14px 0; aspect-ratio: 1.15; background: transparent; }
+  .mc-head { grid-area: head; flex-direction: column; justify-content: flex-start; gap: 8px; padding: 18px 10px 18px 20px; border-bottom: 0; }
+  .mc-head h3 { font-size: 22px; line-height: 1.12; }
+  .mc-price { font-size: 19px; }
+  .mc-body { grid-area: body; border-top: 1px solid #ececec; padding: 16px 20px 20px; font-size: 15px; }
+  .mc-body p { display: block; color: #5f5f5f; }
+  .mc-meta { flex-direction: row; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .mc-plus, .mc-step { right: 6px; bottom: 6px; height: 42px; }
+  .mc-plus { width: 42px; }
+  .mc-step button { width: 34px; }
+  .mc-img::after { width: 40px; top: 4px; right: 4px; }
+}

@@ -21,12 +21,16 @@ export default function Footer() {
         <div className="kf-col">
           <h4>Call to order</h4>
           {SITE.phones.map((p) => <a key={p} href={tel(p)}>{p}</a>)}
+          <a href={waLink(`Hi ${SITE.name}! I'd like to place an order.`)} target="_blank" rel="noreferrer" className="kf-wa">WhatsApp: +91 97776 89321</a>
           <span>{SITE.hours}</span>
         </div>
         <div className="kf-col">
           <h4>Our location</h4>
           {SITE.address.map((a) => <span key={a}>{a}</span>)}
-          <a href={SITE.maps} target="_blank" rel="noreferrer" className="kf-map">Find us on Google Maps →</a>
+          <div className="kf-mapbox">
+            <iframe src={SITE.mapEmbed} title={`${SITE.name} on Google Maps`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen />
+          </div>
+          <a href={SITE.maps} target="_blank" rel="noreferrer" className="kf-map">Get directions →</a>
         </div>
       </div>
       <div className="kf-bottom">

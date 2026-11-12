@@ -2,22 +2,21 @@
 
 import Link from "next/link";
 import Photo from "../Photo";
-import { MENU } from "@/lib/menu";
-import type { PhotoKey } from "@/lib/photos";
-import { SITE } from "@/lib/site";
+import { useContent } from "../providers/Content";
 
 /** KFC "Browse menu categories" mosaic: one big feature tile, then a grid of category tiles. */
 export default function CategoryMosaic() {
-  const tiles: { href: string; label: string; photo: PhotoKey }[] = MENU.map((c) => ({ href: `/menu#cat-${c.id}`, label: c.title, photo: c.photo }));
+  const { menu: MENU, site: SITE, home, deals } = useContent();
+  const tiles: { href: string; label: string; photo: string }[] = MENU.map((c) => ({ href: `/menu#cat-${c.id}`, label: c.title, photo: c.photo }));
   const [a, b, c, d, ...rest] = tiles;
 
   return (
     <div className="mz">
       <Link href="/deals" className="mz-feature">
-        <span className="mz-img"><Photo photo="seafoodSpread" alt="" fill sizes="(max-width: 700px) 100vw, 600px" /></span>
+        <span className="mz-img"><Photo photo={home.dealsTile} alt="" fill sizes="(max-width: 700px) 100vw, 600px" /></span>
         <span className="mz-feature-copy">
           <em>Party combos</em>
-          <b>From ₹299</b>
+          <b>{deals.length ? `From ₹${Math.min(...deals.map((d) => d.price))}` : "Combos"}</b>
         </span>
         <span className="mz-label">Deals &amp; Combos</span>
       </Link>

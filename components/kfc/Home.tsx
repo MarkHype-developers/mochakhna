@@ -9,13 +9,13 @@ import Photo from "../Photo";
 import ProductCard from "./ProductCard";
 import DealCard from "./DealCard";
 import Rail from "./Rail";
-import { BESTSELLERS, DEALS, MENU } from "@/lib/menu";
-import { SITE } from "@/lib/site";
+import { useContent } from "../providers/Content";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
   const root = useRef<HTMLDivElement>(null);
+  const { menu: MENU, deals: DEALS, bestsellers: BESTSELLERS, site: SITE, home } = useContent();
 
 
   return (
@@ -36,9 +36,9 @@ export default function Home() {
               </Link>
             ))}
             <Link href="/deals" className="cat-tile cat-tile--deal rv">
-              <span className="cat-img"><Photo photo="seafoodSpread" alt="" fill sizes="(max-width: 700px) 45vw, 220px" /></span>
+              <span className="cat-img"><Photo photo={home.dealsTile} alt="" fill sizes="(max-width: 700px) 45vw, 220px" /></span>
               <span className="cat-name">Deals &amp; Combos</span>
-              <span className="cat-n">From ₹{Math.min(...DEALS.map((d) => d.price))}</span>
+              <span className="cat-n">{DEALS.length ? `From ₹${Math.min(...DEALS.map((d) => d.price))}` : "Combos"}</span>
             </Link>
           </div>
         </div>

@@ -3,6 +3,7 @@
 import Image, { type ImageProps } from "next/image";
 import { useState } from "react";
 import { PHOTOS, type PhotoKey } from "@/lib/photos";
+import { isUpload } from "@/lib/content";
 
 type Props = Omit<ImageProps, "src" | "loader"> & {
   photo: PhotoKey | string;
@@ -20,6 +21,25 @@ export default function Photo({ photo, fallback, quality = 72, onError, ...rest 
   const [failed, setFailed] = useState(false);
   const id = resolve(failed && fallback ? fallback : photo);
   const handleError: ImageProps["onError"] = (e) => { if (fallback && !failed) setFailed(true); onError?.(e); };
+
+  // Uploaded from the admin panel (stored in Firestore, served by /api/img) — already resized to webp.
+  if (isUpload(id) || id.startsWith("data:")) {
+    const { fill, alt, loading, priority, className, style, draggable } = rest as ImageProps;
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        key={id}
+        src={id}
+        alt={alt}
+        loading={priority ? "eager" : loading ?? "lazy"}
+        decoding="async"
+        draggable={draggable}
+        className={className}
+        onError={handleError as unknown as React.ReactEventHandler<HTMLImageElement>}
+        style={fill ? { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", ...(style ?? {}) } : style}
+      />
+    );
+  }
 
   // Our own photos in /public: served directly (the Next resizer hung on one of them in some
   // browsers). Each has a 600px "-sm" twin, so cards and thumbnails don't decode full-size files.

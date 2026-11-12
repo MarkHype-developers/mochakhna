@@ -3,17 +3,17 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import MenuCard from "./MenuCard";
-import { MENU } from "@/lib/menu";
 import { useLenis } from "../providers/SmoothScroll";
-import { SITE } from "@/lib/site";
+import { useContent } from "../providers/Content";
 
 const headerH = () => (document.querySelector<HTMLElement>(".kn")?.offsetHeight ?? 132);
 
 export default function MenuPage() {
+  const { menu: MENU, site: SITE } = useContent();
   const params = useSearchParams();
   const [q, setQ] = useState(params?.get("q") ?? "");
   const [vegOnly, setVegOnly] = useState(false);
-  const [active, setActive] = useState(MENU[0].id);
+  const [active, setActive] = useState(MENU[0]?.id ?? "");
   const [showTop, setShowTop] = useState(false);
   const [mSearch, setMSearch] = useState(false);
   const lenis = useLenis();
@@ -27,7 +27,7 @@ export default function MenuPage() {
       ...c,
       items: c.items.filter((i) => (!vegOnly || i.diet === "veg") && (!ql || `${i.name} ${c.title} ${i.desc}`.toLowerCase().includes(ql))),
     })).filter((c) => c.items.length);
-  }, [q, vegOnly]);
+  }, [q, vegOnly, MENU]);
 
   // scroll-spy + back-to-top
   useEffect(() => {

@@ -1,10 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { SITE, tel, waLink } from "@/lib/site";
-import { MENU } from "@/lib/menu";
+import { useContent } from "./providers/Content";
 
 export default function Footer() {
   const year = new Date().getFullYear();
+  const { site: SITE, tel, waLink, menu: MENU } = useContent();
   return (
     <footer className="kf">
       <div className="kwrap kf-top">
@@ -21,7 +23,7 @@ export default function Footer() {
         <div className="kf-col">
           <h4>Call to order</h4>
           {SITE.phones.map((p) => <a key={p} href={tel(p)}>{p}</a>)}
-          <a href={waLink(`Hi ${SITE.name}! I'd like to place an order.`)} target="_blank" rel="noreferrer" className="kf-wa">WhatsApp: +91 97776 89321</a>
+          <a href={waLink(`Hi ${SITE.name}! I'd like to place an order.`)} target="_blank" rel="noreferrer" className="kf-wa">WhatsApp: +{SITE.whatsapp.replace(/^(\d{2})(\d{5})(\d+)$/, "$1 $2 $3")}</a>
           <span>{SITE.hours}</span>
         </div>
         <div className="kf-col">

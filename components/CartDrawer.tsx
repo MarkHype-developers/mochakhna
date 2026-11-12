@@ -5,10 +5,11 @@ import { usePathname } from "next/navigation";
 import { gsap } from "gsap";
 import { useCart } from "./providers/Cart";
 import { useLenis } from "./providers/SmoothScroll";
-import { SITE, waLink } from "@/lib/site";
+import { useContent } from "./providers/Content";
 
 export default function CartDrawer() {
   const cart = useCart();
+  const { site: SITE, waLink } = useContent();
   const lenis = useLenis();
   const panel = useRef<HTMLDivElement>(null);
   const shade = useRef<HTMLDivElement>(null);

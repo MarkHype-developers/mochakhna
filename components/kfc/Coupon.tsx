@@ -3,12 +3,11 @@
 import { useState } from "react";
 import Photo from "../Photo";
 import { useCart } from "../providers/Cart";
-import type { PhotoKey } from "@/lib/photos";
 
 type Props = {
   title: string;
   line: string;
-  photo: PhotoKey;
+  photo: string;
   details?: string[];
   addId?: string;        // cart id to add on "Apply Offer"
   cta?: string;

@@ -11,14 +11,16 @@ const dietLabel = (d: MenuItem["diet"]) => (d === "veg" ? "Veg" : d === "egg" ? 
 export default function MenuCard({ item, eager = false }: { item: MenuItem; eager?: boolean }) {
   const cart = useCart();
   const n = cart.qty(item.id);
+  const builtInCut = CUTOUTS.has(item.photo);
+  const cut = builtInCut || Boolean(item.cutout);
   const price = item.priceLabel ?? (item.price === null ? "MRP" : `₹${item.price}`);
 
   return (
     <article className="mc" id={`dish-${item.id}`}>
-      <div className={`mc-img${CUTOUTS.has(item.photo) ? " is-cut" : ""}`}>
-        {CUTOUTS.has(item.photo) ? (
+      <div className={`mc-img${cut ? " is-cut" : ""}`}>
+        {cut ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={cutSrc(item.photo)} alt={item.name} loading={eager ? "eager" : "lazy"} decoding="async" className="mc-cut" />
+          <img src={builtInCut ? cutSrc(item.photo) : item.photo} alt={item.name} loading={eager ? "eager" : "lazy"} decoding="async" className="mc-cut" />
         ) : (
           <Photo photo={item.photo} alt={item.name} fill loading={eager ? "eager" : "lazy"} sizes="(max-width: 700px) 50vw, (max-width: 1200px) 33vw, 320px" />
         )}

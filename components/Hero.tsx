@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { onLoaded } from "@/lib/loaded";
 import Photo from "./Photo";
+import { useContent } from "./providers/Content";
 
 gsap.registerPlugin(SplitText);
 
@@ -21,6 +22,7 @@ export default function Hero() {
   const root = useRef<HTMLElement>(null);
   const [q, setQ] = useState("");
   const router = useRouter();
+  const { home } = useContent();
 
   useGSAP((_, contextSafe) => {
     const qs = gsap.utils.selector(root);
@@ -63,7 +65,7 @@ export default function Hero() {
   return (
     <section ref={root} className="hero" id="top">
       <div className="hero-fish" aria-hidden>
-        <Photo photo="pomfretFry" alt="" fill priority sizes="100vw" quality={70} />
+        <Photo photo={home.heroPhoto} alt="" fill priority sizes="100vw" quality={70} />
       </div>
       <Steam className="hero-steam" />
       <div className="hero-vignette" />

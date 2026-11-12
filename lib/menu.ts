@@ -12,13 +12,15 @@ export type MenuItem = {
   price: number | null;      // null → priceLabel is shown (MRP / Free*)
   priceLabel?: string;
   diet: Diet;
-  photo: PhotoKey;
+  photo: PhotoKey | string;   // built-in photo key, or an uploaded image URL
+  cutout?: boolean;           // uploaded photo already has no background → shown on plain white
+  hidden?: boolean;           // temporarily unavailable → not shown on the site
   tag?: "Bestseller" | "Chef's special" | "New";
   serves?: number;
   tobacco?: boolean;
 };
 
-export type Category = { id: string; group: string; title: string; photo: PhotoKey; items: MenuItem[] };
+export type Category = { id: string; group: string; title: string; photo: PhotoKey | string; items: MenuItem[] };
 
 // COTPA 2003 restricts tobacco advertising in India. Cigarettes stay off the site
 // unless the owner has checked. Flip to true to show them.
@@ -149,7 +151,7 @@ export const BESTSELLERS = ALL_ITEMS.filter((i) => i.tag);
 
 export type Deal = {
   id: string; name: string; title: string; price: number;
-  items: string[]; photo: PhotoKey; serves: string; badge?: string; worth?: number;
+  items: string[]; photo: PhotoKey | string; serves: string; badge?: string; worth?: number; hidden?: boolean;
 };
 
 // Combos (from the previous menu card), re-priced against the new menu prices.

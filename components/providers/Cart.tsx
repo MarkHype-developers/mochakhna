@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { ALL_ITEMS, DEALS } from "@/lib/menu";
+import { useContent } from "./Content";
 
 type Line = { id: string; name: string; price: number | null; qty: number };
 type CartCtx = {
@@ -21,12 +21,12 @@ type CartCtx = {
 const Ctx = createContext<CartCtx | null>(null);
 const KEY = "ac-cart-v1";
 
-const catalogue = new Map<string, { name: string; price: number | null }>([
-  ...ALL_ITEMS.map((i) => [i.id, { name: i.qty ? `${i.name} (${i.qty})` : i.name, price: i.price }] as const),
-  ...DEALS.map((d) => [d.id, { name: `${d.name} — ${d.title}`, price: d.price }] as const),
-]);
-
 export function CartProvider({ children }: { children: React.ReactNode }) {
+  const { allItems, deals } = useContent();
+  const catalogue = useMemo(() => new Map<string, { name: string; price: number | null }>([
+    ...allItems.map((i) => [i.id, { name: i.qty ? `${i.name} (${i.qty})` : i.name, price: i.price }] as const),
+    ...deals.map((d) => [d.id, { name: `${d.name} — ${d.title}`, price: d.price }] as const),
+  ]), [allItems, deals]);
   const [map, setMap] = useState<Record<string, number>>({});
   const [open, setOpen] = useState(false);
   const [lastAdded, setLast] = useState<CartCtx["lastAdded"]>(null);
@@ -35,7 +35,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(KEY) || "{}");
-      const clean = Object.fromEntries(Object.entries(saved).filter(([id, n]) => catalogue.has(id) && typeof n === "number" && n > 0));
+      const clean = Object.fromEntries(Object.entries(saved).filter(([, n]) => typeof n === "number" && n > 0));
       setMap(clean as Record<string, number>);
     } catch {}
   }, []);
@@ -71,7 +71,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       clear: () => setMap({}),
       open, setOpen, lastAdded,
     };
-  }, [map, open, add, remove, lastAdded]);
+  }, [map, open, add, remove, lastAdded, catalogue]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

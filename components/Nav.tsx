@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCart } from "./providers/Cart";
-import { SITE, tel } from "@/lib/site";
+import { useContent } from "./providers/Content";
 
 const links = [
   { href: "/menu", label: "Menu" },
@@ -15,6 +15,7 @@ const links = [
 /** KFC-style header: white bar (logo · Menu · Deals … call · cart) + dark "start order" strip. */
 export default function Nav() {
   const cart = useCart();
+  const { site: SITE, tel } = useContent();
   const path = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);

@@ -3,9 +3,10 @@
 import Coupon from "./Coupon";
 import CategoryMosaic from "./CategoryMosaic";
 import Rail from "./Rail";
-import { DEALS, OFFERS } from "@/lib/menu";
+import { useContent } from "../providers/Content";
 
 export default function DealsPage() {
+  const { deals: DEALS, offers: OFFERS } = useContent();
   return (
     <div className="kdl">
       <section className="kdl-sec">

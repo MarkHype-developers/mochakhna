@@ -10,6 +10,10 @@ import "@fontsource/oswald/700.css";
 import "./globals.css";
 import { SITE } from "@/lib/site";
 import Providers from "@/components/providers/Providers";
+import { fetchContent } from "@/lib/content";
+
+// pages are rebuilt with the latest published content at most once a minute
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -45,12 +49,13 @@ const jsonLd = {
   parentOrganization: { "@type": "Organization", name: "Ayunraz", slogan: "Authentic Food Of New India" },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const content = await fetchContent({ next: { revalidate: 60 } });
   return (
     <html lang="en-IN">
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-        <Providers>{children}</Providers>
+        <Providers content={content}>{children}</Providers>
       </body>
     </html>
   );
